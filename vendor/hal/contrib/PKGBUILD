@@ -1,0 +1,33 @@
+# Maintainer: Steven Roose <steven@stevenroose.org>
+pkgname=hal
+pkgver=0.7.0
+pkgrel=1
+pkgdesc="A Bitcoin swiss-army knife"
+arch=('x86_64')
+url="https://github.com/stevenroose/hal"
+license=('CC0')
+depends=('gcc-libs')
+makedepends=('cargo')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/stevenroose/$pkgname/archive/v$pkgver.tar.gz")
+sha512sums=('dcea255630d60ff775183b11bd725211f1541e3dc0e9a306a031335f5ba96d8e073313db97b04f837080e4a1b0db276b506f81f4d9e0ba902740b02f36505de0')
+
+build() {
+  cd "$pkgname-$pkgver"
+
+  cargo build --release --locked
+}
+
+check() {
+  cd "$pkgname-$pkgver"
+
+  cargo test --release --locked
+}
+
+package() {
+  cd "$pkgname-$pkgver"
+
+  install -Dm755 "target/release/rg" "$pkgdir/usr/bin/rg"
+
+  install -Dm644 "README.md" "$pkgdir/usr/share/doc/${pkgname}/README.md"
+  install -Dm644 "LICENSE" "$pkgdir/usr/share/licenses/${pkgname}/LICENSE-MIT"
+}
